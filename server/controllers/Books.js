@@ -1,21 +1,20 @@
 import mongoose from 'mongoose';
+import _ from 'lodash';
 const Book = mongoose.model('Book');
 
 const getBooks = (req, res) => {
     Book
         .find()
         .populate('author publisher')
-        .sort([['firstName', 'ascending']])
         .exec((err, bookData) => {
             if (err) {
-                res
+                return res
                     .status(404)
                     .json(err);
-                return;
             }
             res
                 .status(200)
-                .json(bookData);
+                .json(_.orderBy(bookData, 'author.firstName', 'asc'));
         });
 };
 
